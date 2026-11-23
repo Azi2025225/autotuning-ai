@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Utilisateurs')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-3"><div class="row">
+    <div class="col-md-2"><div th:replace="~{fragments/sidebar :: sidebar(${section})}"></div></div>
+    <main class="col-md-10">
+        <h1 class="h3 mb-3">Utilisateurs</h1>
+        <div th:replace="~{layout :: flash}"></div>
+        <div class="table-responsive at-card p-2"><table class="table table-dark align-middle mb-0">
+            <thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Rôle</th><th>État</th><th>Actions</th></tr></thead>
+            <tbody>
+            <tr th:each="u : ${clients}">
+                <td th:text="${u.id}"></td><td th:text="${u.nomComplet}"></td><td th:text="${u.email}"></td>
+                <td th:text="${u.telephone}"></td>
+                <td>
+                    <span class="badge" th:classappend="${u.role.name() == 'ADMIN'} ? 'bg-warning text-dark' : 'bg-secondary'" th:text="${u.role}"></span>
+                </td>
+                <td><span class="badge" th:classappend="${u.actif} ? 'bg-success' : 'bg-danger'" th:text="${u.actif} ? 'Actif' : 'Désactivé'"></span></td>
+                <td>
+                    <div class="d-flex flex-wrap gap-2">
+                    <form th:action="@{/admin/clients/{id}/acces(id=${u.id})}" method="post" class="d-flex gap-2">
+                        <select class="form-select form-select-sm" name="role" aria-label="Rôle">
+                            <option value="CLIENT" th:selected="${u.role.name() == 'CLIENT'}">CLIENT</option>
+                            <option value="ADMIN" th:selected="${u.role.name() == 'ADMIN'}">ADMIN</option>
+                        </select>
+                        <input type="hidden" name="actif" th:value="${u.actif}">
+                        <button class="btn btn-sm btn-outline-light" type="submit"
+                                aria-label="Enregistrer le rôle" title="Enregistrer le rôle">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                    </form>
+                    <form th:action="@{/admin/clients/{id}/acces(id=${u.id})}" method="post">
+                        <input type="hidden" name="role" th:value="${u.role.name()}">
+                        <input type="hidden" name="actif" th:value="${!u.actif}">
+                        <button class="btn btn-sm" th:classappend="${u.actif} ? 'btn-outline-danger' : 'btn-outline-success'"
+                                th:text="${u.actif} ? 'Désactiver' : 'Activer'"></button>
+                    </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody></table></div>
+    </main>
+</div></div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

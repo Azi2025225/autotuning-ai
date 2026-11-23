@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Mes commandes')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div th:replace="~{layout :: flash}"></div>
+<div class="container mt-4">
+    <h1 class="h3 mb-3">Mes commandes</h1>
+    <div th:if="${#lists.isEmpty(commandes)}" class="alert alert-secondary">Vous n'avez pas encore passé de commande.</div>
+    <div class="table-responsive at-card p-2" th:unless="${#lists.isEmpty(commandes)}">
+        <table class="table table-dark align-middle mb-0">
+            <thead><tr><th>#</th><th>Date</th><th>Total</th><th>Statut</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="c : ${commandes}">
+                <td th:text="${c.id}"></td>
+                <td th:text="${#temporals.format(c.dateCommande, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${#numbers.formatDecimal(c.total, 1, 'WHITESPACE', 2, 'COMMA')} + ' DT'"></td>
+                <td><span class="badge" th:classappend="'bg-' + ${c.statut.couleur}" th:text="${c.statut.libelle}"></span></td>
+                <td class="text-end"><a class="btn btn-sm btn-outline-light" th:href="@{/commandes/{id}(id=${c.id})}">Détail</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

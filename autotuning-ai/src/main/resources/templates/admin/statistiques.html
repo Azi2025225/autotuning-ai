@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Statistiques')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-3"><div class="row">
+    <div class="col-md-2"><div th:replace="~{fragments/sidebar :: sidebar(${section})}"></div></div>
+    <main class="col-md-10">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+            <h1 class="h3 mb-0">Statistiques</h1>
+            <div class="btn-group btn-group-sm">
+                <a class="btn btn-outline-light" th:classappend="${jours == 7} ? 'active'" th:href="@{/admin/statistiques(jours=7)}">7 jours</a>
+                <a class="btn btn-outline-light" th:classappend="${jours == 30} ? 'active'" th:href="@{/admin/statistiques(jours=30)}">30 jours</a>
+                <a class="btn btn-outline-light" th:classappend="${jours == 90} ? 'active'" th:href="@{/admin/statistiques(jours=90)}">90 jours</a>
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-6 col-lg-3"><div class="at-card p-3"><div class="text-secondary small">Chiffre d'affaires</div><div class="fs-3 fw-bold text-danger" th:text="${#numbers.formatDecimal(ca, 1, 'WHITESPACE', 2, 'COMMA')} + ' DT'"></div></div></div>
+            <div class="col-6 col-lg-3"><div class="at-card p-3"><div class="text-secondary small">Commandes valides</div><div class="fs-3 fw-bold" th:text="${nbCommandesValides}"></div></div></div>
+            <div class="col-6 col-lg-3"><div class="at-card p-3"><div class="text-secondary small">Panier moyen</div><div class="fs-3 fw-bold" th:text="${#numbers.formatDecimal(panierMoyen, 1, 'WHITESPACE', 2, 'COMMA')} + ' DT'"></div></div></div>
+            <div class="col-6 col-lg-3"><div class="at-card p-3"><div class="text-secondary small">Produits à stock faible</div><div class="fs-3 fw-bold text-warning" th:text="${#lists.size(stockFaible)}"></div></div></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-lg-8"><div class="at-card p-3"><h2 class="h6">Chiffre d'affaires par jour (DT)</h2><div style="height:260px"><canvas id="cJour"></canvas></div></div></div>
+            <div class="col-lg-4"><div class="at-card p-3"><h2 class="h6">Commandes par statut</h2><div style="height:260px"><canvas id="cStatut"></canvas></div></div></div>
+            <div class="col-lg-6"><div class="at-card p-3"><h2 class="h6">Chiffre d'affaires par catégorie (DT)</h2><div style="height:260px"><canvas id="cCategorie"></canvas></div></div></div>
+            <div class="col-lg-6"><div class="at-card p-3"><h2 class="h6">Produits les plus vendus (quantités)</h2><div style="height:260px"><canvas id="cTop"></canvas></div></div></div>
+            <div class="col-12"><div class="at-card p-3">
+                <h2 class="h6">Stock faible (3 pièces ou moins)</h2>
+                <div class="table-responsive"><table class="table table-dark align-middle mb-0 small">
+                    <thead><tr><th>Produit</th><th>Catégorie</th><th>Stock</th><th></th></tr></thead>
+                    <tbody>
+                    <tr th:each="p : ${stockFaible}">
+                        <td th:text="${p.nom}"></td><td th:text="${p.categorie.nom}"></td>
+                        <td><span class="badge" th:classappend="${p.stock == 0} ? 'bg-danger' : 'bg-warning text-dark'" th:text="${p.stock == 0} ? 'Rupture' : ${p.stock}"></span></td>
+                        <td class="text-end"><a class="btn btn-sm btn-outline-light" th:href="@{/admin/produits/{id}/modifier(id=${p.id})}">Modifier</a></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(stockFaible)}"><td colspan="4" class="text-secondary">Aucun produit à stock faible.</td></tr>
+                    </tbody></table></div>
+            </div></div>
+        </div>
+    </main>
+</div></div>
+<footer th:replace="~{layout :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script th:inline="javascript">
+    Chart.defaults.color = '#b9b9c4';
+    Chart.defaults.borderColor = '#26262f';
+    var rouge = '#e10600', palette = ['#e10600', '#ff7a45', '#f5b301', '#36a2eb', '#9966ff', '#2ecc71', '#8e8e9a', '#ff4d9d'];
+    var opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+    new Chart(document.getElementById('cJour'), { type: 'line',
+        data: { labels: /*[[${labelsJour}]]*/ [], datasets: [{ data: /*[[${valeursJour}]]*/ [], borderColor: rouge, backgroundColor: 'rgba(225,6,0,.15)', fill: true, tension: .3, pointRadius: 2 }] }, options: opt });
+    new Chart(document.getElementById('cStatut'), { type: 'doughnut',
+        data: { labels: /*[[${labelsStatut}]]*/ [], datasets: [{ data: /*[[${valeursStatut}]]*/ [], backgroundColor: ['#f5b301', '#2ecc71', '#36a2eb', '#e10600'], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+    new Chart(document.getElementById('cCategorie'), { type: 'bar',
+        data: { labels: /*[[${labelsCategorie}]]*/ [], datasets: [{ data: /*[[${valeursCategorie}]]*/ [], backgroundColor: palette }] }, options: opt });
+    new Chart(document.getElementById('cTop'), { type: 'bar',
+        data: { labels: /*[[${labelsTop}]]*/ [], datasets: [{ data: /*[[${valeursTop}]]*/ [], backgroundColor: rouge }] },
+        options: Object.assign({ indexAxis: 'y' }, opt) });
+</script>
+</body>
+</html>

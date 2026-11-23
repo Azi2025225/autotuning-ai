@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Produit')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-3"><div class="row">
+    <div class="col-md-2"><div th:replace="~{fragments/sidebar :: sidebar(${section})}"></div></div>
+    <main class="col-md-10">
+        <h1 class="h3 mb-3" th:text="${form.id == null} ? 'Nouveau produit' : 'Modifier le produit'">Produit</h1>
+        <form th:action="@{/admin/produits}" th:object="${form}" method="post" enctype="multipart/form-data" novalidate class="at-card p-4 row g-3">
+            <input type="hidden" th:field="*{id}">
+            <div class="col-md-8"><label class="form-label">Nom</label>
+                <input th:field="*{nom}" class="form-control" th:classappend="${#fields.hasErrors('nom')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{nom}"></div></div>
+            <div class="col-md-4"><label class="form-label">Catégorie</label>
+                <select th:field="*{categorieId}" class="form-select" th:classappend="${#fields.hasErrors('categorieId')} ? 'is-invalid'">
+                    <option value="">Choisir…</option>
+                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.nom}"></option>
+                </select>
+                <div class="invalid-feedback" th:errors="*{categorieId}"></div></div>
+            <div class="col-12"><label class="form-label">Description</label>
+                <textarea th:field="*{description}" rows="3" class="form-control" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"></textarea>
+                <div class="invalid-feedback" th:errors="*{description}"></div></div>
+            <div class="col-md-3"><label class="form-label">Prix (DT)</label>
+                <input th:field="*{prix}" type="number" step="0.01" min="0" class="form-control" th:classappend="${#fields.hasErrors('prix')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{prix}"></div></div>
+            <div class="col-md-3"><label class="form-label">Stock</label>
+                <input th:field="*{stock}" type="number" min="0" class="form-control" th:classappend="${#fields.hasErrors('stock')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{stock}"></div></div>
+            <div class="col-md-6"><label class="form-label">Photo du produit (JPG ou PNG, 5 Mo max)</label>
+                <input type="file" name="image" accept="image/jpeg,image/png" class="form-control" th:classappend="${#fields.hasErrors('imageUrl')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{imageUrl}"></div>
+                <div class="d-flex align-items-center gap-2 mt-2" th:if="${form.imageUrl != null and !form.imageUrl.isBlank()}">
+                    <img th:src="@{${form.imageUrl}}" width="72" class="rounded" alt="">
+                    <span class="small text-secondary">Photo actuelle (laisser vide pour la conserver)</span>
+                </div>
+                <input type="hidden" th:field="*{imageUrl}"></div>
+            <div class="col-md-8"><label class="form-label">Compatibilité véhicule</label>
+                <input th:field="*{compatibilite}" class="form-control" placeholder="BMW Série 3 (F30), …"></div>
+            <div class="col-md-4"><label class="form-label">Marque</label>
+                <input th:field="*{marque}" class="form-control"></div>
+            <div class="col-12 d-flex gap-2">
+                <button class="btn btn-danger">Enregistrer</button>
+                <a class="btn btn-outline-light" th:href="@{/admin/produits}">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div></div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

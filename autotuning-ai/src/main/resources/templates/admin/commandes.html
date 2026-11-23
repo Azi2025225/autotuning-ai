@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Commandes')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-3"><div class="row">
+    <div class="col-md-2"><div th:replace="~{fragments/sidebar :: sidebar(${section})}"></div></div>
+    <main class="col-md-10">
+        <div th:replace="~{layout :: flash}"></div>
+        <h1 class="h3 mb-3">Commandes</h1>
+        <div class="table-responsive at-card p-2"><table class="table table-dark align-middle mb-0">
+            <thead><tr><th>#</th><th>Client</th><th>Date</th><th>Articles</th><th>Total</th><th>Statut</th></tr></thead>
+            <tbody>
+            <tr th:each="c : ${commandes}">
+                <td th:text="${c.id}"></td>
+                <td><div th:text="${c.utilisateur.nomComplet}"></div><div class="small text-secondary" th:text="${c.utilisateur.email}"></div></td>
+                <td th:text="${#temporals.format(c.dateCommande, 'dd/MM/yyyy HH:mm')}"></td>
+                <td class="small"><div th:each="l : ${c.lignes}" th:text="${l.quantite} + ' × ' + ${l.produit.nom}"></div></td>
+                <td th:text="${#numbers.formatDecimal(c.total, 1, 'WHITESPACE', 2, 'COMMA')} + ' DT'"></td>
+                <td>
+                    <form th:action="@{/admin/commandes/{id}/statut(id=${c.id})}" method="post" class="d-flex gap-1">
+                        <select name="statut" class="form-select form-select-sm" th:disabled="${c.statut.name() == 'ANNULEE'}">
+                            <option th:each="s : ${statuts}" th:value="${s.name()}" th:text="${s.libelle}" th:selected="${s == c.statut}"></option>
+                        </select>
+                        <button class="btn btn-sm btn-outline-light" th:disabled="${c.statut.name() == 'ANNULEE'}"><i class="bi bi-check2"></i></button>
+                    </form>
+                </td>
+            </tr>
+            </tbody></table></div>
+    </main>
+</div></div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

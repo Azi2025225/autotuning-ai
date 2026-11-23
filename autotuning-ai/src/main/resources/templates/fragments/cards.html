@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="produit(p)" class="at-card h-100 d-flex flex-column">
+    <div class="position-relative at-imgwrap">
+        <a th:href="@{/produit/{id}(id=${p.id})}"><img class="w-100 at-img" th:src="@{${p.imageUrl}}" th:alt="${p.nom}"></a>
+        <span class="badge bg-dark border position-absolute top-0 start-0 m-2" th:text="${p.categorie.nom}">Cat</span>
+        <span th:if="${p.stock > 0 and p.stock <= 3}" class="badge bg-warning text-dark position-absolute bottom-0 start-0 m-2">Dernières pièces</span>
+        <button type="button" class="at-heart position-absolute top-0 end-0 m-2" title="Favori" onclick="this.classList.toggle('on');this.querySelector('i').classList.toggle('bi-heart');this.querySelector('i').classList.toggle('bi-heart-fill')"><i class="bi bi-heart"></i></button>
+    </div>
+    <div class="p-3 d-flex flex-column flex-grow-1">
+        <a class="text-decoration-none text-light fw-semibold" th:href="@{/produit/{id}(id=${p.id})}" th:text="${p.nom}">Produit</a>
+        <small class="text-secondary text-truncate" th:text="${p.compatibilite} ?: 'Compatibilité universelle'">Compat</small>
+        <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
+            <span class="text-danger fw-bold" th:text="${#numbers.formatDecimal(p.prix, 1, 'WHITESPACE', 2, 'COMMA')} + ' DT'">0 DT</span>
+            <form th:if="${p.disponible}" th:action="@{/panier/ajouter}" method="post">
+                <input type="hidden" name="produitId" th:value="${p.id}">
+                <button class="btn btn-danger btn-sm" title="Ajouter au panier"><i class="bi bi-cart-plus"></i></button>
+            </form>
+            <span th:unless="${p.disponible}" class="badge bg-secondary">Rupture</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

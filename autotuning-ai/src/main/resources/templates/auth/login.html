@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Connexion')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<main class="container my-4 my-lg-5">
+    <div class="row g-0 at-card overflow-hidden auth-card">
+        <section class="col-lg-6 auth-presentation d-flex flex-column justify-content-center p-4 p-lg-5">
+            <div class="auth-overlay"></div>
+            <div class="position-relative">
+                <span class="badge bg-danger mb-3">AutoTuning TN</span>
+                <h1 class="display-6 fw-bold">Rejoignez la communauté des passionnés d'automobile</h1>
+                <ul class="list-unstyled mt-4 mb-0 auth-benefits">
+                    <li><i class="bi bi-check-circle-fill"></i> Achetez des accessoires</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Personnalisez votre voiture</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Obtenez des conseils IA</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Suivez vos commandes</li>
+                </ul>
+            </div>
+        </section>
+        <section class="col-lg-6 p-4 p-md-5">
+            <ul class="nav nav-pills nav-fill mb-4" aria-label="Navigation d'authentification">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/login}">Connexion</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/inscription}">Inscription</a></li>
+            </ul>
+            <h2 class="h3">Ravi de vous revoir</h2>
+            <p class="text-secondary">Connectez-vous à votre compte AutoTuning TN.</p>
+            <div th:if="${succes}" class="alert alert-success" th:text="${succes}"></div>
+            <div th:if="${param.erreur != null or param.error != null}" class="alert alert-danger" role="alert">
+                Connexion impossible. Vérifiez votre email et votre mot de passe, ou réessayez plus tard.
+            </div>
+            <div th:if="${param.deconnecte}" class="alert alert-info">Vous êtes déconnecté.</div>
+            <div th:if="${param.motDePasseReinitialise}" class="alert alert-success">Votre mot de passe a été modifié. Vous pouvez vous connecter.</div>
+            <form th:action="@{/login}" method="post">
+                <label class="form-label" for="email">Adresse email</label>
+                <input id="email" name="email" type="email" class="form-control mb-3" placeholder="votre@email.com" autocomplete="email" required autofocus>
+                <label class="form-label" for="password">Mot de passe</label>
+                <div class="input-group mb-3">
+                    <input id="password" name="password" type="password" class="form-control" autocomplete="current-password" required>
+                    <button class="btn btn-outline-secondary" type="button" id="toggle-password" aria-label="Afficher le mot de passe" aria-pressed="false">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4 small">
+                    <label class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox" name="remember-me" id="remember-me">
+                        <span class="form-check-label" for="remember-me">Se souvenir de moi</span>
+                    </label>
+                    <a th:href="@{/mot-de-passe-oublie}" class="text-danger">Mot de passe oublié ?</a>
+                </div>
+                <button class="btn btn-danger w-100" type="submit">Se connecter</button>
+            </form>
+            <div class="auth-divider my-3"><span>ou</span></div>
+            <a th:if="${googleDisponible}" class="btn btn-outline-light w-100" th:href="@{/oauth2/authorization/google}">
+                <i class="bi bi-google me-2"></i>Continuer avec Google
+            </a>
+            <p class="text-center small mt-4 mb-0">Vous n'avez pas de compte ?
+                <a th:href="@{/inscription}" class="text-danger">S'inscrire</a>
+            </p>
+        </section>
+    </div>
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+<script>
+    document.getElementById('toggle-password').addEventListener('click', function () {
+        const input = document.getElementById('password');
+        const visible = input.type === 'password';
+        input.type = visible ? 'text' : 'password';
+        this.setAttribute('aria-pressed', String(visible));
+        this.setAttribute('aria-label', visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+        this.querySelector('i').className = visible ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+</script>
+</body>
+</html>

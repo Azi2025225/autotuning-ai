@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Moteur de référence')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-3"><div class="row">
+    <div class="col-md-2"><div th:replace="~{fragments/sidebar :: sidebar(${section})}"></div></div>
+    <main class="col-md-10">
+        <h1 class="h3 mb-3" th:text="${form.id == null} ? 'Nouveau moteur de référence' : 'Modifier le moteur'">Moteur</h1>
+        <form th:action="@{/admin/moteurs}" th:object="${form}" method="post" novalidate class="at-card p-4 row g-3">
+            <input type="hidden" th:field="*{id}">
+            <div class="col-12" th:if="${#fields.hasGlobalErrors()}"><div class="alert alert-danger mb-0" th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+            <h2 class="h6 mt-2">Véhicule</h2>
+            <div class="col-md-3"><label class="form-label small">Marque</label>
+                <input th:field="*{marque}" type="text" class="form-control" th:classappend="${#fields.hasErrors('marque')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{marque}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Modèle (ex. Golf 7 GTI)</label>
+                <input th:field="*{modele}" type="text" class="form-control" th:classappend="${#fields.hasErrors('modele')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{modele}"></div></div>
+            <div class="col-md-6"><label class="form-label small">Motorisation (ex. 2.0 TSI 220 ch, code moteur)</label>
+                <input th:field="*{motorisation}" type="text" class="form-control" th:classappend="${#fields.hasErrors('motorisation')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{motorisation}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Carburant</label>
+                <select th:field="*{carburant}" class="form-select" th:classappend="${#fields.hasErrors('carburant')} ? 'is-invalid'">
+                    <option value="">Choisir…</option><option value="Diesel">Diesel</option><option value="Essence">Essence</option><option value="Hybride">Hybride</option><option value="GPL">GPL</option>
+                </select><div class="invalid-feedback" th:errors="*{carburant}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Année de début</label>
+                <input th:field="*{anneeDebut}" type="number" class="form-control" th:classappend="${#fields.hasErrors('anneeDebut')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{anneeDebut}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Année de fin</label>
+                <input th:field="*{anneeFin}" type="number" class="form-control" th:classappend="${#fields.hasErrors('anneeFin')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{anneeFin}"></div></div>
+            <h2 class="h6 mt-3">Origine et régimes (fiche constructeur)</h2>
+            <div class="col-md-3"><label class="form-label small">Puissance d'origine (ch)</label>
+                <input th:field="*{puissanceOrigine}" type="number" class="form-control" th:classappend="${#fields.hasErrors('puissanceOrigine')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{puissanceOrigine}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Couple d'origine (Nm)</label>
+                <input th:field="*{coupleOrigine}" type="number" class="form-control" th:classappend="${#fields.hasErrors('coupleOrigine')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{coupleOrigine}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Régime du couple max (tr/min)</label>
+                <input th:field="*{regimeCouple}" type="number" class="form-control" th:classappend="${#fields.hasErrors('regimeCouple')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{regimeCouple}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Régime de la puissance max (tr/min)</label>
+                <input th:field="*{regimePuissance}" type="number" class="form-control" th:classappend="${#fields.hasErrors('regimePuissance')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{regimePuissance}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Régime maximal (tr/min)</label>
+                <input th:field="*{regimeMax}" type="number" class="form-control" th:classappend="${#fields.hasErrors('regimeMax')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{regimeMax}"></div></div>
+            <h2 class="h6 mt-3">Stage 1 <span class="text-secondary fw-normal small">(laisser vide si inconnu)</span></h2>
+            <div class="col-md-3"><label class="form-label small">Puissance Stage 1 (ch)</label>
+                <input th:field="*{stage1Ch}" type="number" class="form-control" th:classappend="${#fields.hasErrors('stage1Ch')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{stage1Ch}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Couple Stage 1 (Nm)</label>
+                <input th:field="*{stage1Nm}" type="number" class="form-control" th:classappend="${#fields.hasErrors('stage1Nm')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{stage1Nm}"></div></div>
+            <h2 class="h6 mt-3">Stage 2 <span class="text-secondary fw-normal small">(laisser vide si inconnu)</span></h2>
+            <div class="col-md-3"><label class="form-label small">Puissance Stage 2 (ch)</label>
+                <input th:field="*{stage2Ch}" type="number" class="form-control" th:classappend="${#fields.hasErrors('stage2Ch')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{stage2Ch}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Couple Stage 2 (Nm)</label>
+                <input th:field="*{stage2Nm}" type="number" class="form-control" th:classappend="${#fields.hasErrors('stage2Nm')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{stage2Nm}"></div></div>
+            <h2 class="h6 mt-3">Stage 3 <span class="text-secondary fw-normal small">(laisser vide si inconnu)</span></h2>
+            <div class="col-md-3"><label class="form-label small">Puissance Stage 3 (ch)</label>
+                <input th:field="*{stage3Ch}" type="number" class="form-control" th:classappend="${#fields.hasErrors('stage3Ch')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{stage3Ch}"></div></div>
+            <div class="col-md-3"><label class="form-label small">Couple Stage 3 (Nm)</label>
+                <input th:field="*{stage3Nm}" type="number" class="form-control" th:classappend="${#fields.hasErrors('stage3Nm')} ? 'is-invalid'" >
+                <div class="invalid-feedback" th:errors="*{stage3Nm}"></div></div>
+            <h2 class="h6 mt-3">Fiabilité</h2>
+            <div class="col-md-8"><label class="form-label small">Source (URL ou référence du relevé)</label>
+                <input th:field="*{source}" class="form-control" th:classappend="${#fields.hasErrors('source')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{source}"></div></div>
+            <div class="col-md-4 d-flex align-items-end"><div class="form-check">
+                <input class="form-check-input" type="checkbox" th:field="*{verifie}"><label class="form-check-label" for="verifie1">Valeurs vérifiées (banc d'essai / fiche fiable)</label></div></div>
+            <div class="col-12"><label class="form-label small">Remarque (affichée au client)</label>
+                <textarea th:field="*{remarque}" rows="2" class="form-control"></textarea></div>
+            <div class="col-12 d-flex gap-2">
+                <button class="btn btn-danger">Enregistrer</button>
+                <a class="btn btn-outline-light" th:href="@{/admin/moteurs}">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div></div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

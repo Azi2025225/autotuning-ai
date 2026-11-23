@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Modèles')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div th:replace="~{layout :: flash}"></div>
+<div class="container mt-4">
+    <h1 class="h3">Nos modèles</h1>
+    <p class="text-secondary">Choisissez une voiture, voyez les kits compatibles et essayez-les en image.</p>
+    <div class="alert alert-secondary" th:if="${#lists.isEmpty(modeles)}">Les modèles seront bientôt disponibles.</div>
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4" th:each="m : ${modeles}">
+            <div class="at-card h-100 d-flex flex-column">
+                <div class="at-imgwrap"><img class="w-100 at-img" th:src="@{${m.imageUrl}}" th:alt="${m.libelle}"></div>
+                <div class="p-3 mt-auto">
+                    <h2 class="h5" th:text="${m.libelle}">BMW M4</h2>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-outline-light btn-sm flex-fill" th:href="@{/catalogue(marque=${m.marque})}">Kits compatibles</a>
+                        <a class="btn btn-danger btn-sm flex-fill" th:href="@{/ia/personnalisation(modele=${m.id})}"><i class="bi bi-magic"></i> Essayer un kit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

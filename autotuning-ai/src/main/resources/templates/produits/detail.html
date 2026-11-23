@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${produit.nom})}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div th:replace="~{layout :: flash}"></div>
+<div class="container mt-4">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a th:href="@{/catalogue}">Catalogue</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/catalogue(categorie=${produit.categorie.id})}" th:text="${produit.categorie.nom}"></a></li>
+    </ol></nav>
+    <div class="row g-4">
+        <div class="col-md-6"><div class="at-card p-3"><img class="w-100" th:src="@{${produit.imageUrl}}" th:alt="${produit.nom}"></div></div>
+        <div class="col-md-6">
+            <h1 class="h2" th:text="${produit.nom}">Produit</h1>
+            <p class="fs-3 text-danger fw-bold" th:text="${#numbers.formatDecimal(produit.prix, 1, 'WHITESPACE', 2, 'COMMA')} + ' DT'"></p>
+            <p class="text-secondary" th:text="${produit.description}"></p>
+            <div class="at-card p-3 mb-3" th:if="${produit.compatibilite != null and !produit.compatibilite.isBlank()}">
+                <strong>Compatible avec :</strong> <span class="text-secondary" th:text="${produit.compatibilite}"></span>
+                <div class="small text-warning mt-1">Vérifiez la compatibilité avec votre véhicule avant l'achat.</div>
+            </div>
+            <p th:if="${produit.disponible}" class="text-success"><i class="bi bi-check-circle"></i> En stock (<span th:text="${produit.stock}"></span>)</p>
+            <p th:unless="${produit.disponible}" class="text-danger"><i class="bi bi-x-circle"></i> Rupture de stock</p>
+            <form th:if="${produit.disponible}" th:action="@{/panier/ajouter}" method="post" class="d-flex gap-2 align-items-center">
+                <input type="hidden" name="produitId" th:value="${produit.id}">
+                <label class="me-1" for="qte">Quantité</label>
+                <input id="qte" type="number" name="quantite" value="1" min="1" th:max="${produit.stock < 20 ? produit.stock : 20}" class="form-control w-auto" style="width:90px">
+                <button class="btn btn-danger flex-grow-1"><i class="bi bi-cart-plus"></i> Ajouter au panier</button>
+            </form>
+            <a class="btn btn-outline-light mt-3 w-100" th:href="@{/ia/personnalisation(produit=${produit.id})}"><i class="bi bi-magic"></i> Essayer ce produit sur une voiture</a>
+            <div class="d-flex gap-4 mt-4 text-secondary small">
+                <span><i class="bi bi-truck"></i> Livraison rapide</span>
+                <span><i class="bi bi-shield-check"></i> Paiement sécurisé</span>
+                <span><i class="bi bi-arrow-return-left"></i> Retour sous 14 jours</span>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

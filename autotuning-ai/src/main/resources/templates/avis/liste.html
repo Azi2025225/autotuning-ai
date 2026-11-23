@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout :: head('Avis clients')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div th:replace="~{layout :: flash}"></div>
+<main class="container my-5">
+    <header class="text-center mb-5">
+        <span class="badge bg-danger mb-3">La communauté AutoTuning TN</span>
+        <h1 class="display-6 fw-bold">Les avis de nos clients</h1>
+        <p class="text-secondary">Vos retours nous aident à améliorer la boutique et nos services.</p>
+        <div th:if="${moyenne != null}" class="review-summary">
+            <span class="review-stars" aria-label="Note moyenne sur 5">
+                <i th:each="etoile : ${#numbers.sequence(1, 5)}"
+                   th:class="${etoile <= moyenne} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+            </span>
+            <strong th:text="${#numbers.formatDecimal(moyenne, 1, 1)} + ' / 5'">0,0 / 5</strong>
+            <span class="text-secondary" th:text="'· ' + ${avis.size()} + ' avis'">· 0 avis</span>
+        </div>
+    </header>
+
+    <div class="row g-4">
+        <section class="col-lg-7">
+            <h2 class="h4 mb-3">Témoignages</h2>
+            <div th:if="${#lists.isEmpty(avis)}" class="at-card p-4 text-center">
+                <i class="bi bi-chat-square-heart text-danger fs-1"></i>
+                <p class="text-secondary mt-3 mb-0">Aucun avis pour le moment. Soyez le premier à partager votre expérience !</p>
+            </div>
+            <article th:each="avisClient : ${avis}" class="at-card review-card p-4 mb-3">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                    <div>
+                        <h3 class="h6 mb-1" th:text="${avisClient.utilisateur.prenom} + ' ' + ${#strings.substring(avisClient.utilisateur.nom, 0, 1)} + '.'">Client</h3>
+                        <time class="small text-secondary"
+                              th:datetime="${#temporals.format(avisClient.dateCreation, 'yyyy-MM-dd''T''HH:mm:ss')}"
+                              th:text="${#temporals.format(avisClient.dateCreation, 'dd/MM/yyyy')}">Date</time>
+                    </div>
+                    <span class="review-stars" th:aria-label="'Note : ' + ${avisClient.note} + ' sur 5'">
+                        <i th:each="etoile : ${#numbers.sequence(1, 5)}"
+                           th:class="${etoile <= avisClient.note} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                    </span>
+                </div>
+                <p class="mt-3 mb-0 review-comment" th:text="${avisClient.commentaire}">Commentaire client</p>
+            </article>
+        </section>
+
+        <aside class="col-lg-5">
+            <section class="at-card p-4">
+                        <h2 class="h4">Partagez votre avis</h2>
+                <p class="text-secondary small">Un seul avis par compte. Votre adresse email ne sera pas affichée.</p>
+                <form sec:authorize="isAuthenticated()" th:if="${!aDejaDonneUnAvis}"
+                      th:action="@{/avis}" th:object="${form}" method="post" novalidate>
+                    <label class="form-label" for="note">Votre note</label>
+                    <select id="note" th:field="*{note}" class="form-select mb-1"
+                            th:classappend="${#fields.hasErrors('note')} ? 'is-invalid'">
+                        <option value="0" disabled>Choisissez une note</option>
+                        <option value="5">5 étoiles — Excellent</option>
+                        <option value="4">4 étoiles — Très bien</option>
+                        <option value="3">3 étoiles — Bien</option>
+                        <option value="2">2 étoiles — Peut mieux faire</option>
+                        <option value="1">1 étoile — Décevant</option>
+                    </select>
+                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('note')}" th:errors="*{note}"></div>
+                    <label class="form-label mt-3" for="commentaire">Votre commentaire</label>
+                    <textarea id="commentaire" th:field="*{commentaire}" class="form-control" rows="5"
+                              maxlength="1000" placeholder="Racontez-nous votre expérience..."
+                              th:classappend="${#fields.hasErrors('commentaire')} ? 'is-invalid'"></textarea>
+                    <div class="invalid-feedback" th:errors="*{commentaire}"></div>
+                    <div class="form-text mb-3">Entre 10 et 1000 caractères.</div>
+                    <button class="btn btn-danger w-100" type="submit">Publier mon avis</button>
+                </form>
+                <div sec:authorize="isAuthenticated()" th:if="${aDejaDonneUnAvis}" class="alert alert-success mb-0">
+                    Merci, votre avis a bien été enregistré.
+                </div>
+                <div sec:authorize="isAnonymous()" class="text-center">
+                    <p class="text-secondary">Connectez-vous pour laisser un avis.</p>
+                    <a class="btn btn-danger" th:href="@{/login}">Se connecter</a>
+                </div>
+            </section>
+        </aside>
+    </div>
+</main>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

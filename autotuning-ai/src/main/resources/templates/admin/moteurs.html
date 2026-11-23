@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Moteurs de référence')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-3"><div class="row">
+    <div class="col-md-2"><div th:replace="~{fragments/sidebar :: sidebar(${section})}"></div></div>
+    <main class="col-md-10">
+        <div th:replace="~{layout :: flash}"></div>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h1 class="h3 mb-0">Moteurs de référence</h1>
+            <a class="btn btn-danger" th:href="@{/admin/moteurs/nouveau}"><i class="bi bi-plus-lg"></i> Nouveau moteur</a>
+        </div>
+        <p class="text-secondary small">Seuls les moteurs enregistrés ici affichent des chiffres (puissance, couple, courbes) aux clients. Renseignez des valeurs issues de relevés au banc ou de fiches fiables, avec leur source, puis cochez « vérifié ». Pour tout autre moteur, l'analyse reste qualitative.</p>
+        <div th:if="${erreursImport != null}" class="alert alert-warning small">
+            <ul class="mb-0"><li th:each="e : ${erreursImport}" th:text="${e}"></li></ul>
+        </div>
+        <div class="at-card p-3 mb-3">
+            <h2 class="h6">Importer plusieurs moteurs (CSV)</h2>
+            <p class="small text-secondary mb-2">Colonnes : marque, modele, motorisation, carburant (Diesel/Essence/Hybride/GPL), annee_debut, annee_fin, puissance_origine, couple_origine,
+                regime_couple, regime_puissance, regime_max, stage1_ch…stage3_nm, <strong>source</strong> (obligatoire), verifie (0/1), remarque. Les régimes vides reçoivent une valeur par défaut signalée « estimée ».
+                Cliquez sur « Télécharger le CSV » pour obtenir le modèle avec vos données actuelles.</p>
+            <form th:action="@{/admin/moteurs/import}" method="post" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-center">
+                <input type="file" name="fichier" accept=".csv,text/csv" class="form-control w-auto" required>
+                <div class="form-check"><input class="form-check-input" type="checkbox" name="ecraser" value="true" id="ecraser">
+                    <label class="form-check-label small" for="ecraser">Mettre à jour les moteurs déjà présents</label></div>
+                <button class="btn btn-danger btn-sm" type="submit"><i class="bi bi-upload"></i> Importer</button>
+                <a class="btn btn-outline-light btn-sm" th:href="@{/admin/moteurs/export.csv}"><i class="bi bi-download"></i> Télécharger le CSV</a>
+            </form>
+        </div>
+        <div class="table-responsive at-card p-2"><table class="table table-dark align-middle mb-0 small">
+            <thead><tr><th>Moteur</th><th>Origine</th><th>Stage 1</th><th>Stage 2</th><th>Stage 3</th><th>Statut</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="m : ${moteurs}">
+                <td><div class="fw-semibold" th:text="${m.marque} + ' ' + ${m.modele}"></div><div class="text-secondary" th:text="${m.motorisation} + ' · ' + ${m.anneeDebut} + '-' + ${m.anneeFin}"></div></td>
+                <td th:text="${m.puissanceOrigine} + ' ch / ' + ${m.coupleOrigine} + ' Nm'"></td>
+                <td th:text="${m.stage1Ch != null} ? (${m.stage1Ch} + ' ch / ' + ${m.stage1Nm} + ' Nm') : '—'"></td>
+                <td th:text="${m.stage2Ch != null} ? (${m.stage2Ch} + ' ch / ' + ${m.stage2Nm} + ' Nm') : '—'"></td>
+                <td th:text="${m.stage3Ch != null} ? (${m.stage3Ch} + ' ch / ' + ${m.stage3Nm} + ' Nm') : '—'"></td>
+                <td><span class="badge" th:classappend="${m.verifie} ? 'bg-success' : 'bg-warning text-dark'" th:text="${m.verifie} ? 'Vérifié' : 'À confirmer'"></span></td>
+                <td class="text-end text-nowrap">
+                    <a class="btn btn-sm btn-outline-light" th:href="@{/admin/moteurs/{id}/modifier(id=${m.id})}"><i class="bi bi-pencil"></i></a>
+                    <form class="d-inline" th:action="@{/admin/moteurs/{id}/supprimer(id=${m.id})}" method="post" onsubmit="return confirm('Supprimer ce moteur ?')">
+                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(moteurs)}"><td colspan="7" class="text-secondary">Aucun moteur de référence.</td></tr>
+            </tbody></table></div>
+    </main>
+</div></div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

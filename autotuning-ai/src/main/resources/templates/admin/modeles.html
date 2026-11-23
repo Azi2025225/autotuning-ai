@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Modèles de voitures')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div class="container-fluid mt-3"><div class="row">
+    <div class="col-md-2"><div th:replace="~{fragments/sidebar :: sidebar(${section})}"></div></div>
+    <main class="col-md-10">
+        <div th:replace="~{layout :: flash}"></div>
+        <h1 class="h3 mb-1">Modèles de voitures</h1>
+        <p class="text-secondary small">Photos de voitures présentées au catalogue. Les clients pourront y essayer les kits. Utilisez une photo de profil ou de trois-quarts avant, bien éclairée.</p>
+        <form th:action="@{/admin/modeles}" method="post" enctype="multipart/form-data" class="at-card p-3 row g-2 mb-4">
+            <div class="col-md-3"><input name="marque" class="form-control" placeholder="Marque (BMW)" maxlength="60" required></div>
+            <div class="col-md-3"><input name="nom" class="form-control" placeholder="Modèle (M4 Competition)" maxlength="100" required></div>
+            <div class="col-md-4"><input type="file" name="image" accept="image/jpeg,image/png" class="form-control" required></div>
+            <div class="col-md-2"><button class="btn btn-danger w-100"><i class="bi bi-plus-lg"></i> Ajouter</button></div>
+        </form>
+        <div class="row g-3">
+            <div class="col-6 col-lg-4 col-xl-3" th:each="m : ${modeles}">
+                <div class="at-card">
+                    <img class="w-100 at-img" th:src="@{${m.imageUrl}}" th:alt="${m.libelle}">
+                    <div class="p-3 d-flex justify-content-between align-items-center">
+                        <strong th:text="${m.libelle}">BMW M4</strong>
+                        <form th:action="@{/admin/modeles/{id}/supprimer(id=${m.id})}" method="post" onsubmit="return confirm('Supprimer ce modèle ?')">
+                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" th:if="${#lists.isEmpty(modeles)}"><div class="alert alert-secondary">Aucun modèle pour le moment.</div></div>
+        </div>
+    </main>
+</div></div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

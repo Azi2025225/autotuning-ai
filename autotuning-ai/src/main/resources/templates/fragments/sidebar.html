@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(active)" class="at-side p-3">
+    <div class="list-group list-group-flush">
+        <a th:href="@{/admin}" class="list-group-item" th:classappend="${active == 'dashboard'} ? 'active'"><i class="bi bi-speedometer2"></i> Tableau de bord</a>
+        <a th:href="@{/admin/produits}" class="list-group-item" th:classappend="${active == 'produits'} ? 'active'"><i class="bi bi-box-seam"></i> Produits</a>
+        <a th:href="@{/admin/modeles}" class="list-group-item" th:classappend="${active == 'modeles'} ? 'active'"><i class="bi bi-car-front"></i> Modèles de voitures</a>
+        <a th:href="@{/admin/moteurs}" class="list-group-item" th:classappend="${active == 'moteurs'} ? 'active'"><i class="bi bi-cpu"></i> Moteurs de référence</a>
+        <a th:href="@{/admin/categories}" class="list-group-item" th:classappend="${active == 'categories'} ? 'active'"><i class="bi bi-tags"></i> Catégories</a>
+        <a th:href="@{/admin/commandes}" class="list-group-item" th:classappend="${active == 'commandes'} ? 'active'"><i class="bi bi-receipt"></i> Commandes</a>
+        <a th:href="@{/admin/statistiques}" class="list-group-item" th:classappend="${active == 'statistiques'} ? 'active'"><i class="bi bi-graph-up"></i> Statistiques</a>
+        <a th:href="@{/admin/clients}" class="list-group-item" th:classappend="${active == 'clients'} ? 'active'"><i class="bi bi-people"></i> Utilisateurs</a>
+    </div>
+</aside>
+</body>
+</html>

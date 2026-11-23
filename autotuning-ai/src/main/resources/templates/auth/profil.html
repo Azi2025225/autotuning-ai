@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Mon profil')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div th:replace="~{layout :: flash}"></div>
+<div class="container my-4" style="max-width:640px">
+    <div class="at-card p-4">
+        <h1 class="h3">Mon profil</h1>
+        <p class="text-secondary" th:text="${utilisateur.email}"></p>
+        <form th:action="@{/profil}" th:object="${form}" method="post" novalidate class="row g-3">
+            <div class="col-md-6"><label class="form-label">Prénom</label>
+                <input th:field="*{prenom}" class="form-control" th:classappend="${#fields.hasErrors('prenom')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{prenom}"></div></div>
+            <div class="col-md-6"><label class="form-label">Nom</label>
+                <input th:field="*{nom}" class="form-control" th:classappend="${#fields.hasErrors('nom')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{nom}"></div></div>
+            <div class="col-12"><label class="form-label">Téléphone</label>
+                <input th:field="*{telephone}" class="form-control" th:classappend="${#fields.hasErrors('telephone')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{telephone}"></div></div>
+            <div class="col-12"><label class="form-label">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                <input th:field="*{nouveauMotDePasse}" type="password" autocomplete="new-password" class="form-control" th:classappend="${#fields.hasErrors('nouveauMotDePasse')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{nouveauMotDePasse}"></div></div>
+            <div class="col-12"><button class="btn btn-danger">Enregistrer</button></div>
+        </form>
+    </div>
+</div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

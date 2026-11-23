@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Catalogue')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div th:replace="~{layout :: flash}"></div>
+<div class="container mt-4">
+    <form id="filtres" method="get" th:action="@{/catalogue}"></form>
+    <div class="row g-4">
+        <aside class="col-lg-3">
+            <div class="at-card p-3">
+                <h2 class="h5">Filtres</h2>
+                <label class="form-label small mt-2">Catégorie</label>
+                <select form="filtres" name="categorie" class="form-select form-select-sm">
+                    <option value="">Toutes</option>
+                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.nom}" th:selected="${c.id == categorieId}"></option>
+                </select>
+                <label class="form-label small mt-3">Marque compatible</label>
+                <input form="filtres" name="marque" class="form-control form-control-sm" placeholder="BMW, Audi…" th:value="${marque}">
+                <label class="form-label small mt-3">Prix (DT)</label>
+                <div class="d-flex gap-2">
+                    <input form="filtres" name="prixMin" type="number" min="0" class="form-control form-control-sm" placeholder="Min" th:value="${prixMin}">
+                    <input form="filtres" name="prixMax" type="number" min="0" class="form-control form-control-sm" placeholder="Max" th:value="${prixMax}">
+                </div>
+                <button form="filtres" class="btn btn-danger w-100 mt-3">Appliquer</button>
+                <a class="btn btn-link text-secondary w-100 btn-sm" th:href="@{/catalogue}">Réinitialiser</a>
+            </div>
+        </aside>
+        <section class="col-lg-9">
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <a class="at-chip" th:classappend="${categorieId == null} ? 'on'" th:href="@{/catalogue}">Tout</a>
+                <a class="at-chip" th:each="c : ${categories}" th:classappend="${c.id == categorieId} ? 'on'" th:href="@{/catalogue(categorie=${c.id})}" th:text="${c.nom}"></a>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+                <h1 class="h3 me-auto mb-0">Catalogue <small class="text-secondary fs-6" th:text="'(' + ${#lists.size(produits)} + ' produits)'"></small></h1>
+                <input form="filtres" name="q" class="form-control form-control-sm w-auto" placeholder="Rechercher un produit…" th:value="${q}">
+                <select form="filtres" name="tri" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                    <option value="">Pertinence</option>
+                    <option value="prix_asc" th:selected="${tri == 'prix_asc'}">Prix croissant</option>
+                    <option value="prix_desc" th:selected="${tri == 'prix_desc'}">Prix décroissant</option>
+                    <option value="nom" th:selected="${tri == 'nom'}">Nom</option>
+                </select>
+                <button form="filtres" class="btn btn-outline-light btn-sm"><i class="bi bi-search"></i></button>
+            </div>
+            <div th:if="${#lists.isEmpty(produits)}" class="alert alert-secondary">Aucun produit ne correspond à votre recherche.</div>
+            <div class="row g-3">
+                <div class="col-6 col-md-4" th:each="p : ${produits}">
+                    <div th:replace="~{fragments/cards :: produit(${p})}"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

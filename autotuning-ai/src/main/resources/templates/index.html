@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Accueil')}"></head>
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+<div th:replace="~{layout :: flash}"></div>
+
+<section class="hero">
+    <div class="container py-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6 position-relative" style="z-index:2">
+                <span class="badge bg-danger-subtle text-danger-emphasis mb-3"><i class="bi bi-stars"></i> Boutique + Intelligence artificielle</span>
+                <h1 class="display-4 fw-bold lh-1">Transformez votre voiture.<br><span class="text-danger">Repoussez les limites.</span></h1>
+                <p class="lead text-secondary mt-3">Accessoires, kits carrosserie, conseils moteur et personnalisation visuelle sur une seule plateforme.</p>
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <a class="btn btn-danger btn-lg px-4" th:href="@{/catalogue}">Découvrir le catalogue</a>
+                    <a class="btn btn-outline-light btn-lg px-4" th:href="@{/ia/moteur}">Essayer l'IA</a>
+                </div>
+            </div>
+            <div class="col-lg-6"><img class="hero-car img-fluid" th:src="@{/img/hero-car.png}" alt="Voiture de sport"></div>
+        </div>
+    </div>
+</section>
+<div class="at-strip"><div class="container d-flex flex-wrap justify-content-between gap-3 py-3 small">
+    <span><i class="bi bi-truck text-danger"></i> Livraison rapide</span>
+    <span><i class="bi bi-shield-check text-danger"></i> Paiement sécurisé</span>
+    <span><i class="bi bi-arrow-return-left text-danger"></i> Retour sous 14 jours</span>
+    <span><i class="bi bi-cpu text-danger"></i> Conseils moteur par IA</span>
+</div></div>
+
+<div class="container">
+    <div class="row g-3 my-4">
+        <div class="col-6 col-md-4 col-lg-2" th:each="c : ${categories}">
+            <a class="at-cat d-block text-center p-3 rounded text-decoration-none" th:href="@{/catalogue(categorie=${c.id})}">
+                <i class="bi fs-1 text-danger" th:classappend="${#strings.contains(#strings.toLowerCase(c.nom),'kit')} ? 'bi-car-front-fill' :
+                    (${#strings.contains(#strings.toLowerCase(c.nom),'pare')} ? 'bi-shield-shaded' :
+                    (${#strings.contains(#strings.toLowerCase(c.nom),'spoiler')} ? 'bi-wind' :
+                    (${#strings.contains(#strings.toLowerCase(c.nom),'jante')} ? 'bi-record-circle' :
+                    (${#strings.contains(#strings.toLowerCase(c.nom),'diffuseur')} ? 'bi-layout-sidebar-inset-reverse' :
+                    (${#strings.contains(#strings.toLowerCase(c.nom),'int')} ? 'bi-speedometer' : 'bi-gear-wide-connected')))))"></i>
+                <div class="small mt-2" th:text="${c.nom}">Catégorie</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h2 class="h4">Nos produits populaires</h2>
+        <a th:href="@{/catalogue}" class="text-danger text-decoration-none">Voir tout →</a>
+    </div>
+    <div class="row g-3 mt-1">
+        <div class="col-6 col-md-3" th:each="p : ${populaires}">
+            <div th:replace="~{fragments/cards :: produit(${p})}"></div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-4">
+        <div class="col-md-6">
+            <div class="at-card p-4 h-100">
+                <h3 class="h5"><i class="bi bi-cpu text-danger"></i> Conseiller moteur IA</h3>
+                <p class="text-secondary">Obtenez une explication des Stage 1, 2 et 3 pour votre motorisation, avec limites, risques et contraintes d'homologation.</p>
+                <a class="btn btn-danger" th:href="@{/ia/moteur}">Analyser mon moteur</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="at-card p-4 h-100">
+                <h3 class="h5"><i class="bi bi-palette text-danger"></i> Personnalisation visuelle</h3>
+                <p class="text-secondary">Importez une photo et visualisez couleur, jantes, spoiler ou kit carrosserie (simulation).</p>
+                <a class="btn btn-danger" th:href="@{/ia/personnalisation}">Personnaliser ma voiture</a>
+            </div>
+        </div>
+        <section class="at-card p-4 mt-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h2 class="h5 mb-1">Votre avis compte</h2>
+                <p class="text-secondary mb-0">Découvrez les témoignages et partagez votre expérience avec AutoTuning TN.</p>
+            </div>
+            <a class="btn btn-outline-light flex-shrink-0" th:href="@{/avis}">Voir les avis clients</a>
+        </section>
+    </div>
+</div>
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>
